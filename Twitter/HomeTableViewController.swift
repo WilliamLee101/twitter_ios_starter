@@ -35,6 +35,7 @@ class HomeTableViewController: UITableViewController {
             
         }, failure: { (Error) in
             print("could not retreive tweets")
+            print(Error.localizedDescription)
         })
     }
     
@@ -59,6 +60,7 @@ class HomeTableViewController: UITableViewController {
             
         }, failure: { (Error) in
             print("could not retreive tweets")
+            print(Error.localizedDescription)
         })
         
     }
@@ -93,6 +95,10 @@ class HomeTableViewController: UITableViewController {
             cell.profileImageView.image = UIImage(data: imageData)
         }
         
+        cell.setFavorite(tweetArray[indexPath.row]["favorited"] as! Bool)
+        cell.tweetId = tweetArray[indexPath.row]["id"] as! Int
+        cell.setRetweeted(tweetArray[indexPath.row]["retweeted"] as! Bool)
+        
         return cell
     }
     
@@ -100,7 +106,14 @@ class HomeTableViewController: UITableViewController {
         super.viewDidLoad()
         loadTweets()
         myRefreshController.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
-        tableView.refreshControl = myRefreshController
+        self.tableView.refreshControl = myRefreshController
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = 150
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.loadTweets()
     }
 
     // MARK: - Table view data source
